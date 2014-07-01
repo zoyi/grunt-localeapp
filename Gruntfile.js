@@ -12,37 +12,16 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
-    clean: {
-      previous: ['config', 'log']
-    },
+    clean: { previous: ['config', 'log'] },
 
-    // Configuration to be run (and then tested).
+    nodeunit: { tests: ['test/*_test.js'] },
+
     localeapp: {
       pull: {
         key: "your-localeapp.com-api-key-goes-here",
         dest: "locales",
         format: "json"
-      },
-//      default_options: {
-//        options: {
-//        },
-//        files: {
-//          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
-//        }
-//      },
-//      custom_options: {
-//        options: {
-//          separator: ': ',
-//          punctuation: ' !!!'
-//        },
-//        files: {
-//          'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']
-//        }
-//      }
-    },
-
-    nodeunit: {
-      tests: ['test/*_test.js']
+      }
     }
   });
 
