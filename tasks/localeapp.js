@@ -8,43 +8,69 @@
 
 'use strict';
 
+var command = require('execSync').exec;
+var chalk = require('chalk');
+var yaml = require('yamljs');
+var fs = require('fs');
+
 module.exports = function(grunt) {
+
+  function _checkLocaleappGem() {
+    // localeapp version 0.8.0<br/>
+    var version = command('localeapp -v').stdout.slice(0, -1);
+
+    if (version === undefined) {
+      grunt.fail.fatal('No localeapp gem installed');
+    } else {
+      grunt.log.writeln(chalk.green('✔ ') + chalk.gray(version));
+    }
+
+    return version.split(' ')[2];
+  }
+
+  function _setupProject(key) {
+    command('localeapp install ' + key).stdout;
+    grunt.log.writeln(chalk.green('✔ ') + 'Key ' + chalk.gray(key) + ' successfully installed');
+  }
+
+  function _getLocales() {
+    fs.mkdir('config/locales');
+    fs.mkdir('log');
+    fs.openSync('log/localeapp.yml', 'w');
+
+    // download files
+    command('localeapp pull');
+    var log = yaml.load('log/localeapp.yml');
+    var files = fs.readdirSync('config/locales');
+    grunt.log.writeln(chalk.green('✔ ') + files.length + ' file(s) pulled from localeapp.com');
+    fs.rmdir('log');
+
+    return {
+      polledAt: log.polled_at,
+      updatedAt: log.updated_at,
+      files: files
+    };
+  }
+
 
   // Please see the Grunt documentation for more information regarding task
   // creation: http://gruntjs.com/creating-tasks
 
   grunt.registerMultiTask('localeapp', 'Grunt task for localeapp.com service.', function() {
-    // Merge task-specific and/or target-specific options with these defaults.
-    var options = this.options({
-      punctuation: '.',
-      separator: ', '
-    });
 
-    // Iterate over all specified file groups.
-    this.files.forEach(function(f) {
-      // Concat specified files.
-      var src = f.src.filter(function(filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-          return false;
-        } else {
-          return true;
-        }
-      }).map(function(filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
+    // clear previous pulled files
+    fs.rmdir('config');
 
-      // Handle options.
-      src += options.punctuation;
+    // check requested output format
+    var availableFormats = ['yml', 'json'];
+    if (availableFormats.indexOf(this.data.format) === -1) {
+      grunt.fail.fatal('There is no support for ' + this.data.format + ' yet. Please use one of the following : ' + availableFormats.join(', ') + '.')
+    }
 
-      // Write the destination file.
-      grunt.file.write(f.dest, src);
+    // retreive locales
+    var version = _checkLocaleappGem();
+    _setupProject(this.data.key);
+    var files = _getLocales();
 
-      // Print a success message.
-      grunt.log.writeln('File "' + f.dest + '" created.');
-    });
   });
-
 };
