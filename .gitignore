@@ -1,2 +1,7 @@
 /nbproject/
 /node_modules/
+
+# output files
+/config/
+/log/
+/tmp/
