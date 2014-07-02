@@ -1,13 +1,35 @@
 # grunt-localeapp
 
-> Grunt task for localeapp.com service.
+> last version : 0.1.0 (02/07/2014)
+
+Grunt task for http://www.localeapp.com service. Localeapp is a cloud service which provide a managment 
+interface for translation files. 
+
+They have developped a [ruby gem](https://rubygems.org/gems/localeapp) to interact with their service. 
+This grunt task only wraps this gem, allowing you to use it within a non-ruby project.
+
+The gem comes with some CLI command listed below :
+
+Command | Gem | grunt task | description
+------- | --- | ---------- | ------------
+Add     |  ✔  |            |
+Command |  ✔  |            |
+Daemon  |  ✔  |            |
+Install |  ✔  |     ✔      | Set up the API key which belongs to a specific project
+Pull    |  ✔  |     ✔      | Fetch translations in all defined locales from a specific project
+Push    |  ✔  |            |
+Remove  |  ✔  |            |
+Rename  |  ✔  |            |
+Update  |  ✔  |            |
+
+The documentation of the gem is available at http://rubydoc.info/gems/localeapp/0.8.0/frames.
 
 ## Getting Started
-This plugin requires Grunt `~0.4.5`
 
 If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
 
 ```shell
+gem install localeapp
 npm install grunt-localeapp --save-dev
 ```
 
@@ -17,6 +39,8 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 grunt.loadNpmTasks('grunt-localeapp');
 ```
 
+> You can also use `load-grunt-tasks` to avoid these kind of inclusions.
+
 ## The "localeapp" task
 
 ### Overview
@@ -24,65 +48,56 @@ In your project's Gruntfile, add a section named `localeapp` to the data object 
 
 ```js
 grunt.initConfig({
+
+  ...
+
   localeapp: {
-    options: {
-      // Task-specific options go here.
-    },
-    your_target: {
-      // Target-specific file lists and/or options go here.
-    },
+    pull: {
+      key: "tAbgRC2RemnJye2tLqwc1Y8xoyTUIVqZExlyFM0BlFo0YvCsgB",
+      format: "json",
+      dest: '<%= yeoman.app %>/locales/'
+    }
   },
+
+  ...
+
 });
 ```
 
 ### Options
 
-#### options.separator
-Type: `String`
-Default value: `',  '`
+#### pull
 
-A string value that is used to do something with whatever.
+All arguments are required
 
-#### options.punctuation
-Type: `String`
-Default value: `'.'`
+`key` : This identifier is provided by _localeapp.com_ in the Settings section of a project. It is a
+project-specific information that will allow you to authenticate through their service and specify 
+the project you are looking for.
 
-A string value that is used to do something else with whatever else.
+`format` : Basicly, _localeapp.com_ only exports to yaml format. This options indicates the desired
+output format. Available format are listed below :
 
-### Usage Examples
+format | translation tool
+------ | ----------------
+yml    | _native_
+json   | [yamljs](https://www.npmjs.org/package/yamljs)
 
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
+`dest` : Destination folder where the locale files will be pulled (must end with a '/').
 
-```js
-grunt.initConfig({
-  localeapp: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
-
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
-
-```js
-grunt.initConfig({
-  localeapp: {
-    options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
+> Output example :
+ ```
+ 03:27:12 {tp-i18n} ~/projets/saas$ grunt i18n
+ Running "localeapp:pull" (localeapp) task
+ ✔ localeapp gem installed (v0.8.0)
+ ✔ Key tAbgRC2RemnJye2tLqwc1Y8xoyTUIVqZExlyFM0BlFo0YvCsgB valid
+ ✔ 2 file(s) pulled from localeapp.com : (en-US.yml, fr-FR.yml)
+ ✔ 2 file(s) copied into app/locales/  : (en-US.js, fr-FR.js)
+ ```
 
 ## Contributing
+
+It is my very first grunt task, so please be indulgent and feel free to send me back any constructive comment.
+
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
