@@ -67,6 +67,7 @@ module.exports = function(grunt) {
    * Really fetch locales files
    *
    *  Runs _localeapp pull_ cli command which ask remote servers to download files into yml format.
+   *  Downloaded filenames look like : en-US.yml
    *  It also creates a log file with `polledAt` and `updatedAt` values.
    *
    * @author Sylvain RAGOT {01/07/2014}
@@ -108,8 +109,9 @@ module.exports = function(grunt) {
   /**
    * Create a JSON object from YML downloaded locales.
    *
-   *  In fact it's not really a JSON file, because it creates a javascript varaible (ex: var fr_FR = { ... })
-   *  In addition, it adds some heading comments with gem version, dates, ...
+   *  In addition, it :
+   *  - renames files to follow locale spec : en-US.yml => en_US.json
+   *  - adds some metadata like gem version, dates, ...
    *
    * @param {Object}  files       Returned object from _getLocales() function
    * @param {Boolean} withLocale  Keep or remove the first yml key containaing the locale name (fr-FR: USER : ...)
@@ -127,15 +129,33 @@ module.exports = function(grunt) {
         ? yaml.load(file + '.yml')
         : yaml.load(file + '.yml')[locale];
 
-      fs.rename(file + '.yml', file + '.js', function(err) {
+      fs.rename(file + '.yml', file.replace('-', '_') + '.json', function(err) {
         if ( err ) console.log('ERROR: ' + err);
       });
 
-      var fileContent = '// ' + version + '\n';
-      fileContent += '// polled at : ' + new Date(files.polledAt * 1000) + '\n';
-      fileContent += '// updated at : ' + new Date(files.updatedAt * 1000) + '\n';
-      fileContent += 'var ' + locale.replace('-', '_') + ' = ' + JSON.stringify(json, null, 4);
-      grunt.file.write(file + '.js', fileContent);
+      // add metadata the output
+      json._meta = {};
+      json._meta.polledAt = new Date(files.polledAt * 1000).toString();
+      json._meta.updatedAt = new Date(files.updatedAt * 1000).toString();
+      json._meta.gem = version;
+      grunt.file.write(file.replace('-', '_') + '.json', JSON.stringify(json, null, 4));
+    }
+  }
+
+  /**
+   * Format locales into YML files.
+   *
+   *  Only renames downloaded files from en-US.yml to en_US.yml
+   *
+   * @author Sylvain RAGOT {01/07/2014}
+   */
+  function _formatYML(files) {
+    var locales = files.files;
+
+    for (var i in locales) {
+      var locale = locales[i].split('.yml')[0];   // en-US.yml => en-US
+      var file = 'config/locales/' + locale;
+      fs.rename(file + '.yml', file.replace('-', '_') + '.yml')
     }
   }
 
@@ -172,6 +192,7 @@ module.exports = function(grunt) {
       case 'yml':
       case 'yaml':
       default:
+        _formatYML(files);
         break;
     }
 
