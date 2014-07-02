@@ -2,6 +2,7 @@
 /node_modules/
 
 # output files
+/locales/
 /config/
 /log/
 /tmp/
