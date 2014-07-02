@@ -17,6 +17,14 @@ module.exports = function(grunt) {
 
   var version;
 
+  /**
+   * Runs _localeapp -v_ cli command to check if the gem is installed.
+   *
+   *  This command return something like _localeapp version 0.8.0 _. Note that this returned string
+   *  ends with a newline.
+   *
+   * @author Sylvain RAGOT {01/07/2014}
+   */
   function _checkLocaleappGem() {
     grunt.verbose.writeln('Looking for localeapp gem');
 
@@ -32,6 +40,14 @@ module.exports = function(grunt) {
     grunt.verbose.writeln('----------------------------------');
   }
 
+  /**
+   * Add the project key to be able to interact with it.
+   *
+   *  A key identifies a user on localeapp service and a project. So, there is a key by project.
+   *
+   * @param {String} key
+   * @author Sylvain RAGOT {01/07/2014}
+   */
   function _setupProject(key) {
     grunt.verbose.writeln('Verifying api key');
 
@@ -47,6 +63,14 @@ module.exports = function(grunt) {
     grunt.verbose.writeln('----------------------------------');
   }
 
+  /**
+   * Really fetch locales files
+   *
+   *  Runs _localeapp pull_ cli command which ask remote servers to download files into yml format.
+   *  It also creates a log file with `polledAt` and `updatedAt` values.
+   *
+   * @author Sylvain RAGOT {01/07/2014}
+   */
   function _getLocales() {
     grunt.verbose.writeln('Retreiving locale files');
 
@@ -81,6 +105,16 @@ module.exports = function(grunt) {
     };
   }
 
+  /**
+   * Create a JSON object from YML downloaded locales.
+   *
+   *  In fact it's not really a JSON file, because it creates a javascript varaible (ex: var fr_FR = { ... })
+   *  In addition, it adds some heading comments with gem version, dates, ...
+   *
+   * @param {Object}  files       Returned object from _getLocales() function
+   * @param {Boolean} withLocale  Keep or remove the first yml key containaing the locale name (fr_FR: USER : ...)
+   * @author Sylvain RAGOT {01/07/2014}
+   */
   function _formatJSON(files, withLocale) {
     grunt.verbose.writeln('Formatting files to JSON');
     var withLocale = withLocale || false;
