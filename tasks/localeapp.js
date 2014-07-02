@@ -112,7 +112,7 @@ module.exports = function(grunt) {
    *  In addition, it adds some heading comments with gem version, dates, ...
    *
    * @param {Object}  files       Returned object from _getLocales() function
-   * @param {Boolean} withLocale  Keep or remove the first yml key containaing the locale name (fr_FR: USER : ...)
+   * @param {Boolean} withLocale  Keep or remove the first yml key containaing the locale name (fr-FR: USER : ...)
    * @author Sylvain RAGOT {01/07/2014}
    */
   function _formatJSON(files, withLocale) {
@@ -134,7 +134,7 @@ module.exports = function(grunt) {
       var fileContent = '// ' + version + '\n';
       fileContent += '// polled at : ' + new Date(files.polledAt * 1000) + '\n';
       fileContent += '// updated at : ' + new Date(files.updatedAt * 1000) + '\n';
-      fileContent += 'var ' + locale + ' = ' + JSON.stringify(json, null, 4);
+      fileContent += 'var ' + locale.replace('-', '_') + ' = ' + JSON.stringify(json, null, 4);
       grunt.file.write(file + '.js', fileContent);
     }
   }
