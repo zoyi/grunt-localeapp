@@ -12,14 +12,14 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
-    clean: { previous: ['config', 'log'] },
+    clean: { tmp: ['config', 'log'] },
 
     nodeunit: { tests: ['test/*_test.js'] },
 
     localeapp: {
       pull: {
         key: "your-localeapp.com-api-key-goes-here",
-        dest: "locales",
+        dest: "locales/",
         format: "json"
       }
     }
