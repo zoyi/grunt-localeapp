@@ -94,7 +94,15 @@ module.exports = function(grunt) {
     grunt.verbose.writeln(chalk.green(files.length + ' file(s) pulled'));
     grunt.verbose.writeln(chalk.gray(chalk.italic(log)));
 
-    grunt.log.writeln(chalk.green('✔ ') + files.length + ' locale(s) pulled from localeapp.com : (' + chalk.blue(files.join(', ')) + ')');
+    var locales = "";
+    for (var i in files) {
+      locales += chalk.blue(files[i]);
+      locales += chalk.italic(' [' + _countEntries(files[i]) + ']');
+      if (i < files.length - 1) {
+        locales += ', ';
+      }
+    }
+    grunt.log.writeln(chalk.green('✔ ') + files.length + ' locale(s) pulled from localeapp.com : (' + locales + ')');
 
     grunt.verbose.writeln('----------------------------------');
 
@@ -104,6 +112,33 @@ module.exports = function(grunt) {
       updatedAt: log.updated_at,
       files: files
     };
+  }
+
+  /**
+   * Counts number of i18n keys
+   *
+   *  Note: The iterate function comes from http://stackoverflow.com/a/15690816/1230946
+   *
+   * @param {String} locale name like "en-US.yml"
+   * @returns {Number}
+   * @author Sylvain {03/07/2014}
+   */
+  function _countEntries(locale) {
+    var properties = [];
+    var iterate = function iterate(obj, stack) {
+      for (var property in obj) {
+        if (obj.hasOwnProperty(property)) {
+          if (typeof obj[property] == "object") {
+            iterate(obj[property], stack + '.' + property);
+          } else {
+            properties.push(stack + '.' + property);
+          }
+        }
+      }
+    };
+
+    iterate(grunt.file.readYAML('config/locales/' + locale), '');
+    return properties.length;
   }
 
   /**
