@@ -86,12 +86,12 @@ json   | [yamljs](https://www.npmjs.org/package/yamljs)
 
 > Output example :
  ```
- 03:27:12 {tp-i18n} ~/projets/saas$ grunt i18n
+ 03:27:12 {tp-i18n} ~/projets/saas$ grunt i18n-update
  Running "localeapp:pull" (localeapp) task
  ✔ localeapp gem installed (v0.8.0)
  ✔ Key tAbgRC2RemnJye2tLqwc1Y8xoyTUIVqZExlyFM0BlFo0YvCsgB valid
  ✔ 2 file(s) pulled from localeapp.com : (en-US.yml, fr-FR.yml)
- ✔ 2 file(s) copied into app/locales/  : (en-US.js, fr-FR.js)
+ ✔ 2 file(s) copied into app/locales/  : (en_US.json, fr_FR.json)
  ```
 
 ## Contributing
