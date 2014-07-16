@@ -1,7 +1,7 @@
 {
   "name": "grunt-localeapp",
-  "description": "Grunt task for localeapp.com service.",
-  "version": "0.1.0",
+  "description": "Grunt task for localeapp.com service. It allows easy pulling translation files to yml or json format.",
+  "version": "0.1.2",
   "homepage": "https://github.com/PredicSis/grunt-localeapp",
   "author": {
     "name": "Sylvain RAGOT",
@@ -21,22 +21,22 @@
     }
   ],
   "engines": {
-    "node": ">=0.10.29"
+    "node": "~0.10.26"
   },
   "scripts": {
     "test": "grunt test"
   },
   "devDependencies": {
-    "grunt": "~0.4.5",
+    "grunt": "~0.4.0",
     "grunt-contrib-clean": "^0.5.0",
     "grunt-contrib-nodeunit": "^0.3.3",
     "grunt-debug-task": "^0.1.4"
   },
   "peerDependencies": {
-    "grunt": "~0.4.5"
+    "grunt": "~0.4.0"
   },
   "keywords": [
-    "gruntplugin"
+    "i18n grunt localeapp gem"
   ],
   "dependencies": {
     "chalk": "^0.4.0",
